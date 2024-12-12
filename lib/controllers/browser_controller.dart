@@ -52,7 +52,7 @@ class BrowserController with ChangeNotifier {
   }
 
   Future<void> getSearchEngine() async {
-    mainURL = (await shr.getMainUrl())!;
+    mainURL = await shr.getMainUrl() ?? "https://www.google.com";
     notifyListeners();
   }
 

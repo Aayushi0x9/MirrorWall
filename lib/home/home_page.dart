@@ -396,21 +396,23 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: InAppWebView(
-        initialUrlRequest: URLRequest(
-          url: WebUri(browserControllerW.mainURL),
+      body: Consumer<BrowserController>(
+        builder: (context, provider, child) => InAppWebView(
+          initialUrlRequest: URLRequest(
+            url: WebUri(provider.mainURL),
+          ),
+          onLoadStop: (controller, uri) async {
+            await pullToRefreshController?.endRefreshing();
+          },
+          onLoadStart: (controller, url) async {
+            // browserControllerW.webViewController = controller;
+            await pullToRefreshController?.beginRefreshing();
+          },
+          onWebViewCreated: (controller) {
+            provider.webViewController = controller;
+          },
+          pullToRefreshController: pullToRefreshController,
         ),
-        onLoadStop: (controller, uri) async {
-          await pullToRefreshController?.endRefreshing();
-        },
-        onLoadStart: (controller, url) async {
-          // browserControllerW.webViewController = controller;
-          await pullToRefreshController?.beginRefreshing();
-        },
-        onWebViewCreated: (controller) {
-          browserControllerW.webViewController = controller;
-        },
-        pullToRefreshController: pullToRefreshController,
       ),
     );
   }
